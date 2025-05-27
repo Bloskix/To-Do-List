@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from app.api import auth
+from app.api import auth, tasks
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -35,6 +35,7 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(auth.router)
+app.include_router(tasks.router)
 
 @app.get("/")
 async def root():
