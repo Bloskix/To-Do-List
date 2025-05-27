@@ -1,14 +1,27 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
+from fastapi.security import OAuth2PasswordBearer
+from app.api import auth
+from app.core.config import get_settings
 
-# Cargar variables de entorno
-load_dotenv()
+settings = get_settings()
+
+# Configuración de la documentación de la API
+description = """
+To-Do List API permite gestionar tareas y subtareas.
+
+## Autenticación
+
+* **Registro**: Crea una nueva cuenta de usuario
+* **Login**: Obtiene un token de acceso
+* **Me**: Obtiene la información del usuario actual (requiere autenticación)
+"""
 
 app = FastAPI(
     title="To-Do List API",
-    description="API para la gestión de tareas y subtareas",
-    version="1.0.0"
+    description=description,
+    version="1.0.0",
+    swagger_ui_parameters={"persistAuthorization": True}
 )
 
 # Configuración de CORS
@@ -19,6 +32,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Incluir routers
+app.include_router(auth.router)
 
 @app.get("/")
 async def root():
